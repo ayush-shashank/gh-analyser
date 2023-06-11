@@ -1,39 +1,29 @@
-import {
-  HttpClient
-} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Octokit } from '@octokit/rest';
+import { graphql } from '@octokit/graphql';
+import { IUser, UserQuery } from '../models/user.interface';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class GithubService {
-  // baseUrl = `https://api.github.com`;
-  pat = '';
-  isPATValid = false;
-  gh: Octokit | undefined = undefined;
+  private pat = '';
+  private gqlWithAuth = graphql;
+  user: IUser | undefined;
 
-  constructor(private http: HttpClient) {}
-
-  setAccessToken(token: string) {
-    this.pat = token;
-  }
-
-  initOctokit() {
-    this.gh = new Octokit({
-      auth: this.pat,
-      log: console,
-    });
-  }
+  constructor() {}
 
   verifyPAT(token: string) {
-    const octo = new Octokit({ auth: token });
-    return octo.users
-      .getAuthenticated()
+    const options = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+    return graphql<{ currentUser: IUser }>(UserQuery, options)
       .then((response) => {
         this.pat = token;
-        this.gh = new Octokit({ auth: token });
-        console.log(response.data.login);
+        this.gqlWithAuth = graphql.defaults(options);
+        this.user = response.currentUser;
         return true;
       })
       .catch((_) => false);

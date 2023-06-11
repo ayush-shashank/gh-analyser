@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GithubService } from './services/github.service';
+import { SettingsService } from './services/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -7,32 +7,30 @@ import { GithubService } from './services/github.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'gh-analyser';
+  avatar_url = 'https://images.placeholders.dev/?width=500&height=500';
+  username = 'sdkfjbdskfjhdsjkh';
   isAuth = false;
 
-  constructor(private gh: GithubService) {}
+  constructor(private settings: SettingsService) {}
 
   async ngOnInit() {
-    const pat = localStorage.getItem('gh-pat');
-    if (pat) {
-      if (!(await this.gh.verifyPAT(pat))) {
-        alert('Token Expired!');
-        this.getPAT();
-      } else {
-        this.isAuth = true;
-        this.repoSetup();
-      }
-    } else {
+    const restoreStatus = await this.settings.restoreSettings();
+    if (restoreStatus === -1) this.getPAT();
+    else if (restoreStatus === 0) {
+      alert('Token Expired!');
       this.getPAT();
+    } else {
+      this.isAuth = true;
+      this.repoSetup();
     }
   }
 
   async getPAT() {
     const token = prompt('Enter you Personal Access Token');
-    if (token && (await this.gh.verifyPAT(token))) {
+    if (token && (await this.settings.isTokenValid(token))) {
       localStorage.setItem('gh-pat', token);
       this.isAuth = true;
-      this.selectRepos();
+      this.settings.selectRepos();
     } else {
       alert('Token Invalid!');
       this.getPAT();
@@ -41,6 +39,7 @@ export class AppComponent implements OnInit {
 
   selectRepos() {}
   repoSetup() {
-    console.log('respoSetup');
+    this.settings.selectRepos();
+    console.log('repoSetup');
   }
 }
