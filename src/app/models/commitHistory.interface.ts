@@ -9,7 +9,15 @@ export interface IRepoCommitHistory {
         {
           target: {
             history: {
-              nodes: [{ committedDate: string }];
+              pageInfo: {
+                hasNextPage: boolean;
+                endCursor: string;
+              };
+              nodes: [
+                {
+                  committedDate: string;
+                }
+              ];
             };
           };
         }
@@ -19,9 +27,9 @@ export interface IRepoCommitHistory {
 }
 
 export const RepoCommitHistoryQuery = `
-  query($owner: String!, $repo: String!) {
+  query ($owner: String!, $repo: String!, $perPage: Int!, $cursorRef: String, $cursorHistory: String) {
     repository(owner: $owner, name: $repo) {
-      refs(refPrefix: "refs/heads/", first: 100) {
+      refs(refPrefix: "refs/heads/", first: $perPage, after: $cursorRef) {
         pageInfo {
           hasNextPage
           endCursor
@@ -29,7 +37,11 @@ export const RepoCommitHistoryQuery = `
         nodes {
           target {
             ... on Commit {
-              history {
+              history(first: 100, after: $cursorHistory) {
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
                 nodes {
                   committedDate
                 }
@@ -39,5 +51,5 @@ export const RepoCommitHistoryQuery = `
         }
       }
     }
-  }
+}
 `;
