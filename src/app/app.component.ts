@@ -7,6 +7,7 @@ import { SettingsService } from './services/settings.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  active = 0;
   avatar_url = 'https://images.placeholders.dev/?width=500&height=500';
   username = 'sdkfjbdskfjhdsjkh';
   isAuth = false;
