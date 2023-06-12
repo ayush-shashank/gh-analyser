@@ -25,9 +25,14 @@ export class SettingsService {
 
   checkAccess() {}
   selectRepos() {
-    this.gh.getCommitFrequency('ayush-shashank', 'dda');
-    this.gh.getCommitHistory('ayush-shashank', 'dda');
-    this.gh.getRepoPRList('ayush-shashank', 'CAPD-Project');
-    this.gh.getStats('ayush-shashank', 'dda');
+    // this.gh.getCommitFrequency('ayush-shashank', 'dda');
+    // this.gh.getCommitHistory('ayush-shashank', 'dda');
+    // this.gh.getRepoPRList('ayush-shashank', 'CAPD-Project');
+    // this.gh.getStats('ayush-shashank', 'dda');
+  }
+
+  addRepoToList(owner: string, repo: string) {
+    let res = this.gh.getRepo(owner, repo);
+    console.log(res);
   }
 }
