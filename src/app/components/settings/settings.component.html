@@ -1,1 +1,30 @@
-<p>settings works!</p>
+<h5 for="token" class="form-label">Token</h5>
+<div class="input-group">
+  <input id="token" class="form-control" type="password" [(ngModel)]="pat" [value]="pat" />
+  <button class="btn btn-outline-primary" (click)="setNewToken()">Set Token</button>
+</div>
+
+
+<div class="m5">
+
+  <h5 class="my-3">
+    Tracked Repositories
+  </h5>
+  <div class="row my-3">
+    <div class="col">
+      <input type="text" class="form-control" placeholder="Owner" [(ngModel)]="owner" />
+    </div>
+    <div class="col">
+      <input type="text" class="form-control" placeholder="Repository Name" [(ngModel)]="repoName" />
+    </div>
+    <div class="col">
+      <button class="btn btn-primary" (click)="addRepo()">Add Repository</button>
+    </div>
+  </div>
+  <ul class="list-group" *ngFor="let repo of repoList; let i = index">
+    <li class="list-group-item">
+      {{repo.name}}
+      <button class="btn btn-danger btn-delete" (click)="removeRepo(i)">Delete</button>
+    </li>
+  </ul>
+</div>
