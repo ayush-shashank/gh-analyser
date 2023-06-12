@@ -1,7 +1,7 @@
-export interface IUser {
-  name: string;
+export interface User {
+  name?: string;
   login: string;
-  avatarUrl: string;
+  avatarUrl?: string;
 }
 
 export const UserQuery = `

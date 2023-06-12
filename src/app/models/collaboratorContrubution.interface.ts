@@ -7,6 +7,7 @@ export interface ICollaboratorContribution {
       };
       nodes: [
         {
+          name: string;
           avatarUrl: string;
           login: string;
           contributionsCollection: {
@@ -28,6 +29,8 @@ query($owner: String!, $repo: String!, $perPage: Int!, $cursor: String) {
         endCursor
       }
       nodes {
+        name
+        avatarUrl
         login
         contributionsCollection{
           totalCommitContributions

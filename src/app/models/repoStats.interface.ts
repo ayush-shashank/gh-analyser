@@ -1,22 +1,31 @@
-export interface IRepoStats {
+export interface Stats {
+  forks: number;
+  stars: number;
+  openIssues: number;
+  closedIssues: number;
+  openPullRequests: number;
+  closedPullRequests: number;
+}
+
+export interface StatsQueryResponse {
   repository: {
-    fork: {
-      totalCount: 0;
+    forks: {
+      totalCount: number;
     };
     stargazers: {
-      totalCount: 0;
+      totalCount: number;
     };
     pullRequests: {
-      totalCount: 0;
+      totalCount: number;
     };
     issues: {
-      totalCount: 0;
+      totalCount: number;
     };
     closedPullRequests: {
-      totalCount: 0;
+      totalCount: number;
     };
     closedIssues: {
-      totalCount: 0;
+      totalCount: number;
     };
   };
 }
