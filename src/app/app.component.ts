@@ -33,8 +33,8 @@ export class AppComponent implements OnInit {
       this.isAuth = true;
       this.settings.selectRepos();
     } else {
-      alert('Token Invalid!');
-      this.getPAT();
+      alert('Token Invalid! RELOAD');
+      // this.getPAT();
     }
   }
 
