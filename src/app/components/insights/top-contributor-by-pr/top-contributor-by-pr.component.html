@@ -1,1 +1,21 @@
-<p>top-contributor-by-pr works!</p>
+<div *ngFor="let repo of selectedRepos">
+  {{repo.owner}}/{{repo.name}}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Contributors</th>
+        <th>PR Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let contributor of repo.contributors">
+        <td>
+          <!-- <img class=".img" [src]="contributor.contributorDetails.avatarUrl"> -->
+          <a href="https://github.com/{{contributor.login}}" target="_blank">{{contributor.login}}</a>
+          <!-- ({{contributor.contributorDetails.name}}) -->
+        </td>
+        <td> {{contributor.prCount}} </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
