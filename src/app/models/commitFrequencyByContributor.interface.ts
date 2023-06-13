@@ -1,6 +1,6 @@
 export interface IRepoCommitHistoryByContributor {
   repository: {
-    refs: {
+    branches: {
       pageInfo: {
         hasNextPage: boolean;
         endCursor: string;
@@ -12,7 +12,9 @@ export interface IRepoCommitHistoryByContributor {
               nodes: [
                 {
                   author: {
-                    user: { login: string };
+                    name: string;
+                    avatarUrl: string;
+                    user?: { login: string };
                     date: string;
                   };
                 }
@@ -25,9 +27,9 @@ export interface IRepoCommitHistoryByContributor {
   };
 }
 export const RepoCommitHistoryByContributorQuery = `
-  query($owner: String!, $repo: String!) {
+  query ($owner: String!, $repo: String!, $branchCursor: String, $commitCursor: String) {
     repository(owner: $owner, name: $repo) {
-      refs(refPrefix: "refs/heads/", first: 100) {
+      branches: refs(first: 100, after: $branchCursor, refPrefix: "refs/heads/") {
         pageInfo {
           hasNextPage
           endCursor
@@ -35,12 +37,18 @@ export const RepoCommitHistoryByContributorQuery = `
         nodes {
           target {
             ... on Commit {
-              history {
+              history(first: 100, after: $commitCursor) {
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                }
                 nodes {
                   author {
                     user {
                       login
                     }
+                    name
+                    avatarUrl
                   }
                 }
               }
