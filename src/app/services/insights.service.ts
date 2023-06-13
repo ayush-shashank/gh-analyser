@@ -56,31 +56,42 @@ export class InsightsService {
       .slice(0, Math.min(count, collaborators.length));
   }
 
-  getCommitFrequency(
+  async getCommitFrequency(
     owner: string,
     repo: string,
     startDate: Date,
     endDate: Date
   ) {
-    let frDist: { [x: string]: number } = {};
-    this.gh
-      .getCommitHistory(owner, repo, startDate, endDate)
-      .then((response) => {
-        let dates = response.map((date) => date.toISOString().slice(0, 10));
-        for (let i = 0; i < dates.length; ++i) {
-          let d = dates[i];
-          if (frDist[d]) {
-            frDist[d]++;
-          } else {
-            frDist[d] = 1;
-          }
-        }
-        return frDist;
-      });
+    let commits = await this.gh.getRepoCommits(owner, repo, startDate, endDate);
+    const commitDates = commits.map((commit) =>
+      commit.authoredDate.slice(0, 10)
+    );
+
+    const commitFrequency = this.calculateCommitFrequency(commitDates);
+
+    let currentDate = new Date(startDate);
+    let frequencies: number[] = [];
+
+    while (currentDate < endDate) {
+      const dateString = currentDate.toISOString().slice(0, 10);
+      const frequency = commitFrequency.get(dateString) || 0;
+      frequencies.push(frequency);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return frequencies;
   }
 
   getStats(owner: string, repo: string) {
     return this.gh.getStats(owner, repo);
+  }
+
+  calculateCommitFrequency(dates: string[]): Map<string, number> {
+    const frequencyMap = new Map<string, number>();
+    for (const date of dates) {
+      frequencyMap.set(date, (frequencyMap.get(date) || 0) + 1);
+    }
+    return frequencyMap;
   }
 
   calculateCollaboratorsFrequency(collaborators: User[]): Map<string, number> {

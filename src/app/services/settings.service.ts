@@ -23,13 +23,7 @@ export class SettingsService {
     return this.gh.verifyPAT(token);
   }
 
-  checkAccess() {}
-  selectRepos() {
-    // this.gh.getCommitFrequency('ayush-shashank', 'dda');
-    // this.gh.getCommitHistory('ayush-shashank', 'dda');
-    // this.gh.getRepoPRList('ayush-shashank', 'CAPD-Project');
-    // this.gh.getStats('ayush-shashank', 'dda');
-  }
+  selectRepos() {}
 
   addRepoToList(owner: string, repo: string) {
     let res = this.gh.getRepo(owner, repo);
