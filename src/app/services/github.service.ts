@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { graphql } from '@octokit/graphql';
-import { IUser, UserQuery } from '../models/user.interface';
-import { IRepoStats, StatsQuery } from '../models/repoStats.interface';
+import { User, UserQuery } from '../models/user.interface';
+import {
+  Stats,
+  StatsQuery,
+  StatsQueryResponse,
+} from '../models/repoStats.interface';
 import {
   IRepoCommitHistory,
   RepoCommitHistoryQuery,
@@ -11,6 +15,16 @@ import {
   RepoCommitHistoryByContributorQuery,
 } from '../models/commitFrequencyByContributor.interface';
 import { IRepoPRList, PRListQuery } from '../models/repoPRList.interface';
+import {
+  CollaboratorContributionQuery,
+  ICollaboratorContribution,
+} from '../models/collaboratorContribution';
+import { BranchesQuery, IBranches } from '../models/branches.interface';
+import {
+  BranchCommitsQuery,
+  IBRanchCommits,
+  ICommit,
+} from '../models/branchCommits.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +32,7 @@ import { IRepoPRList, PRListQuery } from '../models/repoPRList.interface';
 export class GithubService {
   private pat = '';
   private gqlWithAuth = graphql;
-  user: IUser | undefined;
+  user: User | undefined;
 
   constructor() {}
 
@@ -28,7 +42,7 @@ export class GithubService {
         authorization: `Bearer ${token}`,
       },
     };
-    return graphql<{ currentUser: IUser }>(UserQuery, options)
+    return graphql<{ currentUser: User }>(UserQuery, options)
       .then((response) => {
         this.pat = token;
         this.gqlWithAuth = graphql.defaults(options);
@@ -40,40 +54,19 @@ export class GithubService {
 
   getStats(owner: string, repo: string) {
     const options = { owner, repo };
-    return this.gqlWithAuth<IRepoStats>(StatsQuery, options)
-      .then((response) => {
-        return response.repository;
-      })
-      .catch((_) => console.error('GET Stats Failed'));
+    return this.gqlWithAuth<StatsQueryResponse>(StatsQuery, options).then(
+      (response) => {
+        const result: Stats = {
+          forks: response.repository.forks.totalCount,
+          stars: response.repository.stargazers.totalCount,
+          openIssues: response.repository.issues.totalCount,
+          closedIssues: response.repository.closedIssues.totalCount,
+          openPullRequests: response.repository.pullRequests.totalCount,
+          closedPullRequests: response.repository.closedPullRequests.totalCount,
+        };
+        return result;
+      }
+    );
   }
 
-  getCommitHistory(owner: string, repo: string) {
-    const options = { owner, repo };
-    return this.gqlWithAuth<IRepoCommitHistory>(RepoCommitHistoryQuery, options)
-      .then((response) => {
-        return response.repository;
-      })
-      .catch((_) => console.error('GET Commit History Failed'));
-  }
-
-  getCommitFrequency(owner: string, repo: string) {
-    const options = { owner, repo };
-    return this.gqlWithAuth<IRepoCommitHistoryByContributor>(
-      RepoCommitHistoryByContributorQuery,
-      options
-    )
-      .then((response) => {
-        return response.repository;
-      })
-      .catch((_) => console.error('GET Commit Frequency Failed'));
-  }
-
-  getRepoPRList(owner: string, repo: string) {
-    const options = { owner, repo };
-    return this.gqlWithAuth<IRepoPRList>(PRListQuery, options)
-      .then((response) => {
-        return response.pullRequests;
-      })
-      .catch((_) => console.error('GET PR List Failed'));
-  }
 }
