@@ -1,5 +1,30 @@
-<!-- <app-comparison-table /> -->
-<!-- <app-top-contributor-by-pr /> -->
-<!-- <app-top-contributor-by-commit /> -->
-<app-commit-frequency />
-<!-- <button (click)="getInsights()">get insights</button> -->
+<nav ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+  <li [ngbNavItem]="1">
+    <button ngbNavLink>Top Contributors by PRs</button>
+    <ng-template ngbNavContent>
+      <app-top-contributor-by-pr />
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="2">
+    <button ngbNavLink>Top Contributors by Commits</button>
+    <ng-template ngbNavContent>
+      <app-top-contributor-by-commit />
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="3">
+    <button ngbNavLink>Commit Frequency Chart</button>
+    <ng-template ngbNavContent>
+      <app-commit-frequency />
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="4">
+    <button ngbNavLink>Repository Statistics Comparison</button>
+    <ng-template ngbNavContent>
+      <app-comparison-table />
+    </ng-template>
+  </li>
+</nav>
+
+<main class="container">
+  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</main>

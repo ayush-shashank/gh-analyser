@@ -9,9 +9,7 @@ import { InsightsService } from 'src/app/services/insights.service';
   styleUrls: ['./insights.component.scss'],
 })
 export class InsightsComponent {
-  owner = 'facebook';
-  repo = 'react';
-  branch = 'token';
+  active = 0;
   constructor(
     private insightService: InsightsService,
     private gh: GithubService
@@ -32,6 +30,5 @@ export class InsightsComponent {
     let endDate = new Date();
     let startDate = new Date();
     startDate.setMonth(endDate.getMonth() - 3);
-
   }
 }
