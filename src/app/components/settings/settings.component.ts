@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GlobalStateService } from 'src/app/services/global-state.service';
 import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
@@ -8,32 +9,59 @@ import { SettingsService } from 'src/app/services/settings.service';
 })
 export class SettingsComponent {
   pat = '';
-  repoName = '';
-  owner = '';
-  repoList: { name: string; selected: boolean }[] = [
-    { name: 'ayush-shashank/dda', selected: false },
-    { name: 'ayush-shashank/CPAD-Project', selected: false },
-    { name: 'ayush-shashank', selected: false },
-  ];
-  constructor(private settings: SettingsService) {
-    this.pat = 'ajsgh';
+  repoLink = '';
+  selectedRepos: { owner: string; name: string }[] = [];
+
+  constructor(
+    private settings: SettingsService,
+    private gs: GlobalStateService
+  ) {
+    this.gs.personalAccessToken.subscribe((token) => {
+      this.pat = token;
+    });
+    this.gs.selectedRepos.subscribe((repos) => {
+      this.selectedRepos = repos;
+    });
   }
-  setNewToken() {}
+
+  async setNewToken() {
+    let result = await this.settings.isTokenValid(this.pat);
+    result ? alert('Token Updated.') : alert('Invalid Token!');
+  }
+
   selectRepos() {}
 
-  changeSelect($event: any) {
-    let i = this.repoList.findIndex((repo) => repo.name == $event.target.value);
-    this.repoList[i].selected = $event.target.checked ? true : false;
-  }
+  // changeSelect($event: any) {
+  //   let i = this.selectedRepos.findIndex((repo) => repo.name == $event.target.value);
+  //   this.selectedRepos[i].selected = $event.target.checked ? true : false;
+  // }
+
   removeRepo(i: number) {
     console.log('splice');
-    this.repoList.splice(i, 1);
-  }
-  addRepo() {
-    console.log(this.owner, this.repoName);
-    this.settings.addRepoToList(this.owner, this.repoName);
-    this.owner = '';
-    this.repoName = '';
+    this.selectedRepos.splice(i, 1);
+    this.gs.selectedRepos.next(this.selectedRepos);
   }
 
+  extractRepoFromLink(url: string) {
+    const regex = /github.com\/([^/]+)\/([^/]+)/;
+    const match = url.match(regex);
+
+    if (match) {
+      const owner = match[1];
+      const name = match[2];
+      return { owner, name };
+    }
+    return null;
+  }
+
+  addRepo() {
+    const result = this.extractRepoFromLink(this.repoLink);
+    if (!result) {
+      alert('Invalid URL!');
+      return;
+    }
+    console.log(result.owner, result.name);
+    this.settings.addRepoToList(result.owner, result.name);
+    this.repoLink = '';
+  }
 }

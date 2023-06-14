@@ -12,18 +12,15 @@
   </h5>
   <div class="row my-3">
     <div class="col">
-      <input type="text" class="form-control" placeholder="Owner" [(ngModel)]="owner" />
-    </div>
-    <div class="col">
-      <input type="text" class="form-control" placeholder="Repository Name" [(ngModel)]="repoName" />
+      <input type="text" class="form-control" placeholder="Repository Link" [(ngModel)]="repoLink" />
     </div>
     <div class="col">
       <button class="btn btn-primary" (click)="addRepo()">Add Repository</button>
     </div>
   </div>
-  <ul class="list-group" *ngFor="let repo of repoList; let i = index">
+  <ul class="list-group" *ngFor="let repo of selectedRepos; let i = index">
     <li class="list-group-item">
-      {{repo.name}}
+      {{repo.owner}}/{{repo.name}}
       <button class="btn btn-danger btn-delete" (click)="removeRepo(i)">Delete</button>
     </li>
   </ul>

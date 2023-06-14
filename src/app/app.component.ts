@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingsService } from './services/settings.service';
+import { GlobalStateService } from './services/global-state.service';
+import { User } from './models/user.interface';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +10,21 @@ import { SettingsService } from './services/settings.service';
 })
 export class AppComponent implements OnInit {
   active = 0;
-  avatar_url = 'https://images.placeholders.dev/?width=500&height=500';
-  username = 'sdkfjbdskfjhdsjkh';
-  isAuth = false;
+  currentUser: User = {
+    name: '',
+    login: '',
+    avatarUrl: 'https://images.placeholders.dev/?width=500&height=500',
+    url: '',
+  } as User;
 
-  constructor(private settings: SettingsService) {}
+  constructor(
+    private settings: SettingsService,
+    private gs: GlobalStateService
+  ) {
+    this.gs.currentUser.subscribe((user) => {
+      this.currentUser = user;
+    });
+  }
 
   async ngOnInit() {
     const restoreStatus = await this.settings.restoreSettings();
@@ -21,7 +33,7 @@ export class AppComponent implements OnInit {
       alert('Token Expired!');
       this.getPAT();
     } else {
-      this.isAuth = true;
+      this.gs.isAuth = true;
       this.repoSetup();
     }
   }
@@ -30,11 +42,10 @@ export class AppComponent implements OnInit {
     const token = prompt('Enter you Personal Access Token');
     if (token && (await this.settings.isTokenValid(token))) {
       localStorage.setItem('gh-pat', token);
-      this.isAuth = true;
+      this.gs.isAuth = true;
       this.settings.selectRepos();
     } else {
-      alert('Token Invalid! RELOAD');
-      // this.getPAT();
+      alert('Token Invalid! RELOAD!!');
     }
   }
 

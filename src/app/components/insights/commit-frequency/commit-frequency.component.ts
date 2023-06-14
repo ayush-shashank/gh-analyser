@@ -24,10 +24,9 @@ export class CommitFrequencyComponent implements OnInit {
     private gs: GlobalStateService
   ) {
     Chart.register(...registerables);
-    this.selectedRepos = [
-      { owner: 'facebook', name: 'react' },
-      { owner: 'ayush-shashank', name: 'dda' },
-    ];
+    this.gs.selectedRepos.subscribe((repos) => {
+      this.selectedRepos = repos;
+    });
   }
 
   ngOnInit(): void {

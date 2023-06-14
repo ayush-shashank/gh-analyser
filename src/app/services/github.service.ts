@@ -17,6 +17,7 @@ import {
   StatsQueryResponse,
 } from '../models/repoStats.interface';
 import { User, UserQuery } from '../models/user.interface';
+import { GlobalStateService } from './global-state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +27,7 @@ export class GithubService {
   private gqlWithAuth = graphql;
   user: User | undefined;
 
-  constructor() {}
+  constructor(private gs: GlobalStateService) {}
 
   verifyPAT(token: string) {
     const options = {
@@ -36,9 +37,10 @@ export class GithubService {
     };
     return graphql<{ currentUser: User }>(UserQuery, options)
       .then((response) => {
-        this.pat = token;
+        this.gs.personalAccessToken.next(token);
         this.gqlWithAuth = graphql.defaults(options);
-        this.user = response.currentUser;
+        this.gs.currentUser.next(response.currentUser);
+        this.gs.isAuth = true;
         return true;
       })
       .catch((_) => false);

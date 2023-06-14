@@ -23,7 +23,9 @@ export class TopContributorByPRComponent implements OnInit {
     private insightsService: InsightsService,
     private gs: GlobalStateService
   ) {
-    this.selectedRepos = this.gs.selectedRepos;
+    this.gs.selectedRepos.subscribe((repos) => {
+      this.selectedRepos = repos;
+    });
   }
 
   ngOnInit() {
@@ -38,7 +40,7 @@ export class TopContributorByPRComponent implements OnInit {
         repo.name,
         this.startDate,
         this.endDate,
-        this.top,
+        this.top
       );
       return repo;
     });
