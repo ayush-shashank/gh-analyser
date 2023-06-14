@@ -40,6 +40,10 @@ export class SettingsComponent {
     console.log('splice');
     this.selectedRepos.splice(i, 1);
     this.gs.selectedRepos.next(this.selectedRepos);
+    localStorage.setItem(
+      'repos',
+      this.selectedRepos.map((repo) => `${repo.owner}/${repo.name}`).join(',')
+    );
   }
 
   extractRepoFromLink(url: string) {

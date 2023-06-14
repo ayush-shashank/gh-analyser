@@ -27,6 +27,7 @@ export class SettingsService {
           name: owner_repo[1],
         };
       });
+      this.gs.selectedRepos.next(this.selectedRepos);
     }
     return 1;
   }
@@ -45,5 +46,9 @@ export class SettingsService {
     }
     this.selectedRepos.push({ owner, name });
     this.gs.selectedRepos.next(this.selectedRepos);
+    localStorage.setItem(
+      'repos',
+      this.selectedRepos.map((repo) => `${repo.owner}/${repo.name}`).join(',')
+    );
   }
 }
