@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SettingsService } from './services/settings.service';
 import { GlobalStateService } from './services/global-state.service';
 import { User } from './models/user.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,10 @@ import { User } from './models/user.interface';
 })
 export class AppComponent implements OnInit {
   active = 0;
+  links = [
+    { title: 'Insights', url: 'insights' },
+    { title: 'Settings', url: 'settings' },
+  ];
   currentUser: User = {
     name: '',
     login: '',
@@ -19,7 +24,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private settings: SettingsService,
-    private gs: GlobalStateService
+    private gs: GlobalStateService,
+    public route: ActivatedRoute
   ) {
     this.gs.currentUser.subscribe((user) => {
       this.currentUser = user;

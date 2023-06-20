@@ -13,7 +13,15 @@ import { CommitFrequencyComponent } from './components/insights/commit-frequency
 import { ComparisonTableComponent } from './components/insights/comparison-table/comparison-table.component';
 
 @NgModule({
-  declarations: [AppComponent, InsightsComponent, SettingsComponent, TopContributorByCommitComponent, TopContributorByPRComponent, CommitFrequencyComponent, ComparisonTableComponent],
+  declarations: [
+    AppComponent,
+    InsightsComponent,
+    SettingsComponent,
+    TopContributorByCommitComponent,
+    TopContributorByPRComponent,
+    CommitFrequencyComponent,
+    ComparisonTableComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
