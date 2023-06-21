@@ -13,13 +13,19 @@
   <div class="row my-3">
     <div class="input-group">
       <input type="text" class="form-control" placeholder="Repository Link" [(ngModel)]="repoLink" />
-      <button class="btn btn-primary" (click)="addRepo()">Add Repository</button>
+      <button class="btn btn-success" (click)="addRepo()">
+        <i class="bi bi-plus-circle"></i>
+        Add
+      </button>
     </div>
   </div>
   <ul class="list-group" *ngFor="let repo of selectedRepos; let i = index">
     <li class="list-group-item">
-      {{repo.owner}}/{{repo.name}}
-      <button class="btn btn-danger btn-delete" (click)="removeRepo(i)">Delete</button>
+      <a href="https://github.com/{{repo.owner}}/{{repo.name}}" target="_blank">{{repo.owner}}/{{repo.name}}</a>
+      <button class="btn btn-outline-danger btn-delete" (click)="removeRepo(i)">
+        <i class="bi bi-trash"></i>
+        Remove
+      </button>
     </li>
   </ul>
 </div>

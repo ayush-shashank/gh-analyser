@@ -261,7 +261,6 @@ export class GithubService {
     let contributors: User[] = [];
     let pageCount = 100;
     while (hasNextPage && pageCount === 100) {
-      // console.log(++i, hasNextPage);
       try {
         let response = await this.gqlWithAuth<IRepoPRList>(
           PRListQuery,
@@ -269,7 +268,7 @@ export class GithubService {
         );
         let pagePR = response.repository.pullRequests.nodes.filter((pr) => {
           const prDate = new Date(pr.createdAt);
-          return startDate >= prDate && prDate > endDate;
+          return startDate < prDate && prDate <= endDate;
         });
         contributors = pagePR.map((pr) => pr.author).concat(contributors);
         pageCount = pagePR.length;

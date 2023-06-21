@@ -33,7 +33,9 @@ export class TopContributorByPRComponent implements OnInit {
   }
 
   getContributors() {
-    this.endDate.setMonth(new Date().getMonth() - 6);
+    this.endDate = new Date();
+    this.startDate.setMonth(this.endDate.getMonth() - 6);
+
     this.selectedRepos.map(async (repo) => {
       repo.contributors = await this.insightsService.getTopCollaboratorsByPR(
         repo.owner,

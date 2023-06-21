@@ -35,7 +35,7 @@ export class InsightsService {
   async getTopCollaboratorsByPR(
     owner: string,
     repo: string,
-    startDate = new Date(),
+    startDate: Date,
     endDate: Date,
     count: number
   ) {
